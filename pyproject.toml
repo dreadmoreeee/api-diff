@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "api-diff"
+version = "0.1.0"
+description = "Classify changes between two OpenAPI 3.x specs as breaking, non-breaking or info."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Marvin Palencia" }]
+dependencies = ["PyYAML>=6.0"]
+
+[project.scripts]
+api-diff = "api_diff.cli:main"
+
+[project.urls]
+Homepage = "https://marvin.demarkstudio.ca"
+
+[tool.setuptools]
+packages = ["api_diff"]

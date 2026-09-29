@@ -1,0 +1,110 @@
+openapi: 3.0.3
+info:
+  title: Pet Store
+  version: 2.0.0
+security:
+  - oauth: [pets.read]
+paths:
+  /pets:
+    get:
+      summary: List pets (paginated)
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema: {type: integer}
+        - name: ownerId
+          in: query
+          schema: {type: string}
+        - name: sort
+          in: query
+          schema: {type: string}
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [available, sold, archived]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Pet"
+    post:
+      summary: Create a pet
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewPet"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+  /pets/{petId}:
+    parameters:
+      - name: petId
+        in: path
+        required: true
+        schema: {type: string}
+    get:
+      summary: Get a pet
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Pet"
+    delete:
+      summary: Delete a pet
+      deprecated: true
+      responses:
+        "204":
+          description: Deleted
+  /pets/{petId}/photos:
+    get:
+      summary: List photos
+      parameters:
+        - name: petId
+          in: path
+          required: true
+          schema: {type: string}
+      responses:
+        "200":
+          description: OK
+components:
+  securitySchemes:
+    oauth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://example.com/auth
+          scopes:
+            pets.read: Read pets
+  schemas:
+    NewPet:
+      type: object
+      required: [name, species]
+      properties:
+        name: {type: string}
+        tag: {type: string}
+        species: {type: string}
+    Pet:
+      type: object
+      properties:
+        id: {type: integer}
+        name: {type: string}
+        status:
+          type: string
+          enum: [available, sold, archived]
+        createdAt: {type: string}
+        parent:
+          $ref: "#/components/schemas/Pet"
